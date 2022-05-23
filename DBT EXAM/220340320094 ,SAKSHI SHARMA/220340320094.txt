@@ -1,0 +1,171 @@
+--******************* SECTION 1***************************
+
+-- ------------------------------QUESTION 1
+
+create table DEPT
+(
+DEPTNO int(2),
+DNAME  varchar(15),
+LOC    varchar(10)
+);
+
+insert into DEPT (deptno , dname , loc)
+values(10 , 'ACCOUNTING' , 'NEWYORK'),
+(20 , 'RESEARCH' ,'DALLAS'),
+(30 , 'SALES' ,'CHICAGO'),
+(20 , 'OPERATIONS' ,'BOSTON');
+
+
+SELECT * FROM DEPT;
++--------+------------+---------+
+| DEPTNO | DNAME      | LOC     |
++--------+------------+---------+
+|     10 | ACCOUNTING | NEWYORK |
+|     20 | RESEARCH   | DALLAS  |
+|     30 | SALES      | CHICAGO |
+|     40 | OPERATIONS | BOSTON  |
++--------+------------+---------+
+-- ------------------------------QUESTION 2
+
+create table EMP
+(
+EMPNO    int(4),
+ENAME    varchar(10),
+JOB      varchar(9),
+HIREDATE date,
+SAL      float(7,2),
+COMM     float(7,2),
+DEPTNO   int(2)
+);
+
+insert into EMP (empno , ename , job , hiredate , sal , comm , deptno) values
+(7839, 'KING' , 'MANAGER','1991-11-17', 5000, NULL ,10 ),
+(7698, 'BLAKE' , 'CLERK' ,'1981-05-01', 2850, NULL ,30 ),
+(7782, 'CLARK' , 'MANAGER','1981-06-09', 2450, NULL ,10 ),
+(7566, 'JONES' , 'CLERK' ,'1981-04-02', 2975, NULL ,20 ),
+(7654, 'MARTIN' , 'SALESMAN' ,'1981-09-28', 1250, 1400 ,30 ),
+(7499, 'ALLEN' , 'SALESMAN' ,'1981-02-20', 1600, 300 ,30 );
+
+
+SELECT * FROM EMP;
++-------+--------+----------+------------+---------+---------+--------+
+| EMPNO | ENAME  | JOB      | HIREDATE   | SAL     | COMM    | DEPTNO |
++-------+--------+----------+------------+---------+---------+--------+
+|  7839 | KING   | MANAGER  | 1991-11-17 | 5000.00 |    NULL |     10 |
+|  7698 | BLAKE  | CLERK    | 1981-05-01 | 2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER  | 1981-06-09 | 2450.00 |    NULL |     10 |
+|  7566 | JONES  | CLERK    | 1981-04-02 | 2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN | 1981-09-28 | 1250.00 | 1400.00 |     30 |
+|  7499 | ALLEN  | SALESMAN | 1981-02-20 | 1600.00 |  300.00 |     30 |
++-------+--------+----------+------------+---------+---------+--------+
+
+
+
+-- ----------QUESTION 3 Display all the employees where SAL between 2500 and 5000 (inclusive of both).
+
+select * from emp
+where sal between 2500 and 5000;
+
+--------------- QUESTION 4 Display all the ENAMEs in descending order of ENAME
+select ename from emp
+order by ename desc;
+
+-- ---------QUESTION 5 Display all the JOBs in lowercase.
+select lower(job) from emp;
+
+----------- QUESTION 6. Display the ENAMEs and the lengths of the ENAMEs
+
+select ename , length(ename) from emp;
+
+---------- QUESTION 7. Display the DEPTNO and the count of employees who belong to that DEPTNO .
+select deptno , count(*) from emp
+group by deptno;
+
+-- ---------QUESTION 8. Display the DNAMEs and the ENAMEs who belong to that DNAME
+
+select DEPT.dname , EMP.ename from EMP , DEPT
+where DEPT.deptno = EMP.deptno
+group by dname ;
+
+----------- QUESTION 9. Display the position at which the string ‘AR’ occurs in the ename.
+
+select instr(ename , 'AR') from emp;
+
+------------ QUESTION 10. Display the HRA for each employee given that HRA is 20% of SAL
+
+select sal , sal*0.2 as "HRA" from emp;
+
+
+
+
+-- ******************************SECTION 2***********************
+
+--------------- QUESTION 1
+
+create table TEMPP
+(
+result varchar(30)
+);
+
+drop table tempp;
+
+/*CREATING PROCEDURE*/
+delimiter //
+create procedure PROC1( string1 varchar(10) , string2 varchar(10))
+begin
+    
+     if instr(string2 , string1 ) then
+		insert into tempp values ('String1 exist inside String2');
+     else 
+		insert into tempp values (' String1 not exist inside String2');
+	end if;
+end; //
+delimiter ;
+drop procedure proc1;
+call  PROC1('DAC', 'CDAC');
+select * from tempp;   
+
+
+
+-- ---------------QUESTION 2
+create table demo2
+(
+fir varchar(20)
+);
+
+/*CREATING STORED FUNTION*/
+delimiter //
+create function FUNC1( s1 int , s2 int , s3 int)/*s1 , s2 , s3 are the sides of triange*/
+returns boolean
+deterministic
+begin
+	if s1+s2>s3 then
+		if s1 + s3> s2 then 
+			if s2+s3>s1 then
+				return TRUE;
+			end if;
+        end if; 
+     end if;   
+    return false;
+end; //
+delimiter ;   
+drop function FUNC1; 
+
+delimiter //
+create procedure FUN()
+begin
+	declare x varchar(10);
+    
+    set x = FUNC1(10 , 20 , 5);
+		insert into demo2 values('valid');
+end; //
+delimiter ; 
+drop procedure FUN;
+
+call FUN();
+select * from demo2;   
+    
+
+
+
+
